@@ -14,3 +14,5 @@ private和protected都不可一杯外界访问，但是可以借助类中的publ
 
 5. delete [] a能将a指向的一片区域析构,例如a指向a[0],a[1],a[2]..,delete []之后就会对a[0],a[2]...调用析构函数，delete a能将a指向的一个元素即a[0]析构。
 https://blog.csdn.net/cbNotes/article/details/38900799
+
+6. 预编译中(...)是可变参数

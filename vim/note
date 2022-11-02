@@ -1,0 +1,12 @@
+//vim 正则表达式
+https://blog.csdn.net/Jack__Chiang/article/details/78043242
+
+// vim map映射
+如果忘记了map命令的方式可 help map
+https://my.oschina.net/alphajay/blog/43028
+
+
+// nmap <leader> t :Translate <CR>
+这个表示的是按下leader键后在按t 就会映射为按键:Translate + 回车
+vim 默认的leader是'\' ,(注意不是'|')
+https://zhuanlan.zhihu.com/p/351752071

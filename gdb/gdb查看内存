@@ -1,0 +1,10 @@
+# 官网
+https://sourceware.org/gdb/onlinedocs/gdb/Memory.html
+
+例子：
+用汇编(i)形式查看内存(0xb76650)长度为1000的内容
+x/1000ib 0xb76650
+
+# 还可以使用watch来监控内存
+https://stackoverflow.com/questions/3649438/watchpoint-a-fixed-address
+rwatch在变量被读取的时候会出现中断

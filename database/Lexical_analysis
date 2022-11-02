@@ -1,0 +1,27 @@
+1.其他人的此法分析代码，使用flex，但是没有语法分析
+https://gitee.com/Brett-Tseng/Lexical_Analysis
+
+2. 其他人语法分析原理的资料
+自学指南 Flex & Bison - jswh的文章 - 知乎
+https://zhuanlan.zhihu.com/p/22892926
+一个讲解语法分析的pdf
+https://www.capsl.udel.edu/courses/cpeg421/2012/slides/Tutorial-Flex_Bison.pdf
+
+3 flex&&bison此人给出了一些代码讲解,1，3两篇写的巨好
+https://zhuanlan.zhihu.com/p/518109641
+https://zhuanlan.zhihu.com/p/518223994
+https://zhuanlan.zhihu.com/p/120812270
+
+
+4. lex yacc的一个小形计算器
+https://blog.csdn.net/u014015972/article/details/51480680
+
+
+
+
+
+
+
+---------------------------------------------------------
+
+%token表示终结符，其定义一般在词法分析的文件中。

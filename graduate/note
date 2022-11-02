@@ -1,0 +1,76 @@
+#暗光成像
+	https://github.com/vis-opt-group/SCI
+
+	# 好牛皮的一个网络，就是使用了tensorflow
+	https://github.com/zhangyhuaee/KinD?utm_source=catalyzex.com
+	# 没有用到深度学习的一个方法
+	https://github.com/pvnieo/Low-light-Image-Enhancement?utm_source=catalyzex.com
+	想法就是可不可以将这个方法推广到其他任务上！！（高动态，去雾），这个里面有两个论文作的传统算法，一个是类似于高动态的算法，另一个就是专门处理暗光的传统算法
+	https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=7782813		# 亮度
+	https://arxiv.org/pdf/1910.13688.pdf									# 高动态
+	一个高动态量化的论文
+	https://d1wqtxts1xzle7.cloudfront.net/86287854/2203.06504v1-with-cover-page-v2.pdf?Expires=1666323203&Signature=Rs0R3rTUBFc4UWeU1LJKU1bSx-j568aWeHvDZ-fI~ZRJOc9fDz9RAGld~Lw~aUDqUznvHy1Np3fVHzKU9pZz9yFhJsk4eVpqfomi-IJbszomgNrxGE31vU-hWlAlrVFqUZJdz0B6bpTF-B7rtqf0z2PUOoSFTqXempl5AIeRquDbyVwwy3Y-S12PwoK1nSVkk3XJn96MfzoT8vkUm3qbxxO~lipIcxAaWj8yD6AcuvqhvOqLpKCVzBbvDIymvgNUKrAOI~77TH4pQjQd~JUdHjEC48MHQch9pgiDqK2td9kLmc6rO~cOC~Hak0~KTsFTJHrybUad0ArLWZK88U9mIA__&Key-Pair-Id=APKAJLOHF5GGSLRBV4ZA
+
+# remove haze dataset	
+# https://zhuanlan.zhihu.com/p/565877529
+
+# 图像重建任务量化
+# 超分
+https://d1wqtxts1xzle7.cloudfront.net/86287854/2203.06504v1-with-cover-page-v2.pdf?Expires=1666863462&Signature=AqRDOt~LlYgS8RgOeN1Nm2rz~WJbv7q7gV8KooGfDf~VB9v0AhNGJgzDsvT0mNklLMIJI3rqWl1K0bQIeKOrtbVdnt7tCQE~LlXF-5YLlSF9wi~iN7MIe8-Q5u2IFf-UvdyHlUJx4PgNe53t1p0oL6c22Ze~FbEDmsIprakZ6wMGrty69byhDYNPOPyKDHxkchS8cc9WFTcAZ73mQPFCxe4X9-SgC4z1gS6fJ50KQAG84jMNlv-7mFGSbG73mimZDw6NL-KEkUjhiqUX5YlPxQZa252ShpKPO1weBfHc9UsvXNLQtL0NtavdXc~bf46P8ETQNx5mFeTa5XI9dKjmBg__&Key-Pair-Id=APKAJLOHF5GGSLRBV4ZA
+
+
+
+
+
+一. 对于量化
+1. 通过正则项来降低你认为量化带来的损失。（与原网络相比,或者说为量化的时候）
+
+2. 暗光成像(可以不光是暗光, 注意这里最后不要接目标检测，不然的话会导致很多问题） + （如何加入降噪！有可能作）
+
+3. 量化方式，对数量化（快速的移位操作，代替了整数乘法, 这个很少有人使用，大部分人都是再做均匀量化）。hessian矩阵 + 可计算方法衡量量化位数 + 正则项（减小量化损失）, 这里的hessian只是起到一个辅助的作用。
+
+5. 量化 + 剪枝/蒸馏(位数为零自动剪枝)
+https://mp.weixin.qq.com/s/EsUJ7HQ5_JLvmoePKi8Hiw
+
+创新点：1. 量化参数网络使用神经网络来处理，就是说一些本来无法训练的参数现在使用网络自身确定 2. 正则项（如何缩小一些对原始网络参数和量化后网络参数之间的差距）， 3. 量化位数确定（hessian(一种粗略的方法) + 其他精确确确定方法）
+
+
+二. 对于暗光等网络的定制量化方式
+
+1. 使用某种能极大的减小量化时产生的模型参数损失
+
+一.
+当前量化应用在暗光成像网络的论文基本没有查到,这个方向目前基本没人做，对于量化暗光成像网络，我是想在量化性能上作出改进,但是会结合暗光成像的任务来做。
+一般的量化创新点主要集中在以下几个方面。
+1. 减少反向传播损失，浮点数到定点数如果同过不可导函数（取整函数）转化则无法反向传播，如果提出一个可导的方式，即利用可导函数拟合不可导函数（取整函数）就可以完成反向传播
+2. 减少量化损失。如果我们认为我们找到量化误差发生的来源，我们可以通过衡量误差来源的大小同过正则项的方式来减小误差，例如我们认为误差的来源可能是浮点数变为定点数参数变化大小，那么我们可以计算这个大小放在正则项中，通过网络优化
+3. 量化位数确定方式，有些利用神经网络本身去优化，也有通过统计各层参数来计算的
+4. 与特定任务结合, 例如与暗光增强结合
+
+二.
+我先在目前能想到的创新点有
+1. 位数确定方式：
+hessian矩阵确定网络层的量化位数和神经网络自动确定网络层量化位数与NAS网络搜索的方式结合来确定量化位数，因为hessian矩阵确定量化位数的时候没有考虑到量化方法（如使用均匀量化或者非均匀量化），但是使用神经网络自身进行优化每一层的位数是使用了网络的loss函数，loss函数是会有这个量化方式信息的，所以两者结合可能会互补，使得位数确定的更好。
+后续可能会在减少量化损失和反向传播误差上做一些努力。
+
+2. 可以将量化的输出和未量化的输出取出绝对值，看看差距，用来衡量量化之后的效果
+3. 神经网络中关键层一般指的第一层，下采样层和最后一层，这些层相对于其他普通层对模型性能影响更大，所以需要额外注意。
+
+4. hessian用于衡量量化误差，可以当作衡量量化损失的一项。
+
+5. 网络仅尽可能的小，防止梯度发生问题，（我们可以首先进行模型压缩！）
+
+
+最近看了一些综述，有人也提出量化和蒸馏的结合效果也可以，后面也可能会作一些这样的工作。
+
+三.
+对于结果我想和其他的量化方法进行比较，一般的论文中都是将其他的量化方法用在自己任务上，然后比较多种方法所得到的模型大小和图像评价指标。
+
+现在对于开题的想法只有这些，不知道老师对我的想法有什么看法没
+
+量化方法综述：
+2022 05 18
+https://zhuanlan.zhihu.com/p/516116539
+
+
+王给的题目是：暗光图像增强网络的量化方法研究
